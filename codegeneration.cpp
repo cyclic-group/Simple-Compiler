@@ -116,12 +116,11 @@ int getMemberOffset(CodeGenerator *cg, std::string className, std::string member
 
 void CodeGenerator::visitProgramNode(ProgramNode* node) {
     println(".data");
-    println("printstr: .asciz \"%d\\n\"");
-    println("");
+    std::cout << "printstr: .asciz \"%d\\n\"" << std::endl << std::endl;
     println(".text");
     println(".globl Main_main");
     node->visit_children(this);
-    println("");
+    std::cout << std::endl;
 }
 
 void CodeGenerator::visitClassNode(ClassNode* node) {
@@ -144,7 +143,6 @@ void CodeGenerator::visitMethodBodyNode(MethodBodyNode* node) {
     }
     int sizeOfLocals = numberOfLocals * 4;
 
-    println("# Method Body");
     // save base pointer, set new base pointer
     println("   push %ebp");
     println("   movl %esp, %ebp");
@@ -155,13 +153,13 @@ void CodeGenerator::visitMethodBodyNode(MethodBodyNode* node) {
     println("   push %edi");
     
     // allocate space for locals
-    std::cout << "  add $" << -sizeOfLocals << ", $esp" << std::endl;
+    std::cout << "  add $" << -sizeOfLocals << ", %esp" << std::endl;
 
     // generate code for children 
     node->visit_children(this);
 
     // deallocate space for locals
-    std::cout << "  sub $" << sizeOfLocals << ", $esp" << std::endl;
+    std::cout << "  add $" << sizeOfLocals << ", %esp" << std::endl;
     
     // restore protected registers
     println("   pop %edi");
@@ -197,7 +195,6 @@ void CodeGenerator::visitAssignmentNode(AssignmentNode* node) {
         std::string memberName = node->identifier_2->name;
         const auto objectInfo = getVariableInfo(this, objectName);
 
-        std::cout << "# Assignment to " << objectName << '.' << memberName << std::endl;
         if (isLocalVariable(this, objectName)) {
             // if the object is a local variable
             const auto memberOffset = getMemberOffset(this, objectInfo.type.objectClassName, memberName);
@@ -223,14 +220,13 @@ void CodeGenerator::visitAssignmentNode(AssignmentNode* node) {
     } else {
 
         std::string variableName = node->identifier_1->name;
-        std::cout << "# Assignment to " << variableName << std::endl;
         if (isLocalVariable(this, variableName)) {
             // if the variable is local 
             const auto variableInfo = getVariableInfo(this, variableName);
             // save the assign value
             println("   pop %eax");
             // store the assign value to base address + variable offset
-            std::cout << "  movl %eax, " << variableInfo.offset << "(%ebx)" << std::endl;
+            std::cout << "  movl %eax, " << variableInfo.offset << "(%ebp)" << std::endl;
         } else {
             // else the variable must be a member of self (the activator)
             const auto memberOffset = getMemberOffset(this, currentClassName, variableName);
@@ -315,7 +311,7 @@ void CodeGenerator::visitDoWhileNode(DoWhileNode* node) {
     node->expression->accept(this);
     println("   pop %eax");
     println("   mov $0, %ebx");
-    println("   cmp %eax, $ebx");
+    println("   cmp %eax, %ebx");
     println("   jne " + loopStartLabel);
     println(loopExitLabel + ":");
 }
@@ -498,7 +494,7 @@ void CodeGenerator::visitMethodCallNode(MethodCallNode* node) {
     std::string methodName;
 
     if (node->identifier_2) {
-        className = node->identifier_1->name;
+        className = getVariableInfo(this, node->identifier_1->name).type.objectClassName;
         classInfo = classTable->at(className);
         methodName = node->identifier_2->name;
     } else {
@@ -511,9 +507,9 @@ void CodeGenerator::visitMethodCallNode(MethodCallNode* node) {
         classInfo = classTable->at(className);
     }
 
-    std::cout << "  call " << className << "_" << methodName;
+    std::cout << "  call " << className << "_" << methodName << std::endl;
     std::cout << "  movl %eax, %ebx" << std::endl;
-    std::cout << "  add $" << 4 * (node->expression_list->size() + 1) << std::endl;
+    std::cout << "  add $" << 4 * (node->expression_list->size() + 1) << ", %esp" <<  std::endl;
     
     // restore temporary registers
     println("   pop %edx");
