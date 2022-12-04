@@ -1,0 +1,9 @@
+Main {
+
+     main() -> none {
+     	    int x;
+     	    x = 6 - 4;
+     	    print x * 2;
+     }    
+
+}

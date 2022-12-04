@@ -1,0 +1,27 @@
+classA {
+
+       f0() -> none {
+           int x;
+	   x = 6;
+	   print x * 2;
+       }
+
+       doAll() -> none {
+           int x;
+	   x = 10;
+
+	   print x + 1;
+	   f0();
+	   print x - 1;
+       }
+
+}
+
+Main {
+
+     main() -> none {
+     	    classA a;
+	    a.doAll();
+     }
+
+}

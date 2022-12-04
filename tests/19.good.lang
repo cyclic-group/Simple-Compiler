@@ -1,0 +1,31 @@
+classA {
+     int x;
+     int y;
+
+     classA(int xarg, int yarg) -> none {
+         x = xarg;
+	 y = yarg;
+     }
+
+     inc() -> none {
+         x = x * 2;
+	 y = y + 1;
+     }
+}
+
+Main {
+
+     main() -> none {
+     	    classA a;
+	    int i;
+
+	    a = new classA(3, 4);
+	    print a.x;
+	    print a.y;
+
+	    a.inc();
+
+	    print a.x * a.y;
+     }
+
+}

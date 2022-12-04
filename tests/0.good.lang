@@ -1,0 +1,11 @@
+Main {
+
+     main() -> none {
+
+     	    print (True ? False : True ? False : True); 
+              print ((True ? False : True) ? False : True); 
+              /* True ? False : (True ? False : True);*/
+
+     }    
+
+}

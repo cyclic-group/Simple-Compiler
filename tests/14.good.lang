@@ -1,0 +1,31 @@
+classA {
+
+       f0(int x, boolean y) -> int {
+       	    int val;
+
+       	    if y {
+	       val = x * x;
+	    } else {
+	       val = x / 2;
+	    }
+
+	    return val;  
+       }
+
+       doAll() -> none {
+       
+           print f0(5, True);
+	   print f0(6, False);
+
+       }
+
+}
+
+Main {
+
+     main() -> none {
+     	    classA a;
+	    a.doAll();
+     }
+
+}

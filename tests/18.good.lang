@@ -1,0 +1,34 @@
+classA {
+     int x;
+     int y;
+
+     inc() -> none {
+         x = x * 2;
+	 y = y + 1;
+     }
+}
+
+Main {
+
+     main() -> none {
+     	    classA a;
+	    int i;
+
+	    a = new classA;
+	    a.x = 2;
+	    a.y = 3;
+
+	    print a.x;
+	    print a.y;
+
+	    i = 0;
+	    do  {
+	        a.inc();
+		
+		print a.x;
+		print a.y;
+		i = i + 1;
+	    } while (5 > i);
+     }
+
+}
